@@ -5,5 +5,9 @@
 .gradle
 build
 
+# Run Data
+run
+run-data
+
 # Other
 .DS_Store
