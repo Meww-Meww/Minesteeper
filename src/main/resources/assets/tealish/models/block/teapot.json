@@ -1,0 +1,6 @@
+{
+  "parent": "tealish:block/template_teapot",
+  "textures": {
+    "top": "tealish:block/teapot"
+  }
+}

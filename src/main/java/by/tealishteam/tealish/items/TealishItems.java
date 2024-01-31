@@ -15,7 +15,7 @@ public class TealishItems {
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
     // Block Items
-    public static final RegistryObject<Item> TEAPOT = ITEMS.register("teapot_item",
+    public static final RegistryObject<Item> TEAPOT = ITEMS.register("teapot",
             () -> new BlockItem(TealishBlocks.TEAPOT.get(), new Item.Properties())
     );
 

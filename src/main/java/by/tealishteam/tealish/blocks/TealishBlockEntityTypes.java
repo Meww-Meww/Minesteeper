@@ -10,7 +10,7 @@ import static by.tealishteam.tealish.Tealish.MODID;
 
 public class TealishBlockEntityTypes {
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES_REGISTER = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
-    public static final RegistryObject<BlockEntityType<TeapotEntity>> TEAPOT = BLOCK_ENTITIES_REGISTER.register("teapot_block_entity", () -> BlockEntityType.Builder.of(TeapotEntity::new, TealishBlocks.TEAPOT.get()).build(null));
+    public static final RegistryObject<BlockEntityType<TeapotEntity>> TEAPOT = BLOCK_ENTITIES_REGISTER.register("teapot", () -> BlockEntityType.Builder.of(TeapotEntity::new, TealishBlocks.TEAPOT.get()).build(null));
 
     public static void register(IEventBus modEventBus){
         BLOCK_ENTITIES_REGISTER.register(modEventBus);
