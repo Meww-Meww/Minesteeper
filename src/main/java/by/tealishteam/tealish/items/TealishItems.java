@@ -27,7 +27,7 @@ public class TealishItems {
                     .nutrition(1).saturationMod(1f).build()))
     );
 
-    public static final RegistryObject<Item> WHEAT_SEEDS = ITEMS.register("tea_seeds", () -> new ItemNameBlockItem(TealishBlocks.TEA_LEAVES_CROP.get(), new Item.Properties()));
+    public static final RegistryObject<Item> TEA_SEEDS = ITEMS.register("tea_seeds", () -> new ItemNameBlockItem(TealishBlocks.TEA_LEAVES_CROP.get(), new Item.Properties()));
 
     public static void register(IEventBus modEventBus){
         ITEMS.register(modEventBus);
