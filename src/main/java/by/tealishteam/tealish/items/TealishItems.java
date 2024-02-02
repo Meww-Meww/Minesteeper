@@ -4,6 +4,8 @@ import by.tealishteam.tealish.blocks.TealishBlocks;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemNameBlockItem;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -24,6 +26,8 @@ public class TealishItems {
             () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
                     .nutrition(1).saturationMod(1f).build()))
     );
+
+    public static final RegistryObject<Item> WHEAT_SEEDS = ITEMS.register("tea_seeds", () -> new ItemNameBlockItem(TealishBlocks.TEA_LEAVES_CROP.get(), new Item.Properties()));
 
     public static void register(IEventBus modEventBus){
         ITEMS.register(modEventBus);
