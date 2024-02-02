@@ -8,6 +8,7 @@ import by.tealishteam.tealish.menus.TealishMenuTypes;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -29,6 +30,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
+import static net.minecraft.client.renderer.ItemBlockRenderTypes.setRenderLayer;
+
 @Mod(Tealish.MODID)
 public class Tealish
 {
@@ -42,6 +45,7 @@ public class Tealish
             .displayItems((parameters, output) -> {
                 output.accept(TealishItems.TEA_LEAVES.get());
                 output.accept(TealishItems.TEAPOT.get());
+                output.accept(TealishItems.WHEAT_SEEDS.get());
             }).build());
 
     public Tealish()
@@ -111,6 +115,7 @@ public class Tealish
             event.enqueueWork(
                     () -> MenuScreens.register(TealishMenuTypes.TEAPOT_MENU.get(), TeapotScreen::new)
             );
+            setRenderLayer(TealishBlocks.TEA_LEAVES_CROP.get(), RenderType.cutout());
         }
     }
 }
