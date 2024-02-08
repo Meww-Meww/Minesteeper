@@ -5,6 +5,7 @@ import by.tealishteam.tealish.blocks.TealishBlocks;
 import by.tealishteam.tealish.items.TealishCreativeModeTab;
 import by.tealishteam.tealish.items.TealishItems;
 import by.tealishteam.tealish.menus.TealishMenuTypes;
+import by.tealishteam.tealish.recipes.TealishRecipes;
 import com.mojang.logging.LogUtils;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -38,6 +39,7 @@ public class Tealish
         TealishItems.register(modEventBus);
         TealishBlockEntityTypes.register(modEventBus);
         TealishMenuTypes.register(modEventBus);
+        TealishRecipes.register(modEventBus);
         // Register the Deferred Register to the mod event bus so tabs get registered
         TealishCreativeModeTab.register(modEventBus);
 
