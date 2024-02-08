@@ -23,8 +23,12 @@ public class TealishItems {
 
     // Items
     public static final RegistryObject<Item> TEA_LEAVES = ITEMS.register("tea_leaves",
-            () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
+            () -> new TeaLeaves(new Item.Properties().food(new FoodProperties.Builder()
                     .nutrition(1).saturationMod(1f).build()))
+    );
+
+    public static final RegistryObject<Item> LOOSE_LEAF_TEA = ITEMS.register("loose_leaf_tea",
+            () -> new LooseLeafTea(new Item.Properties())
     );
 
     public static final RegistryObject<Item> TEA_SEEDS = ITEMS.register("tea_seeds", () -> new ItemNameBlockItem(TealishBlocks.TEA_LEAVES_CROP.get(), new Item.Properties()));

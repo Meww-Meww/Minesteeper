@@ -18,6 +18,7 @@ public class TealishCreativeModeTab {
                 output.accept(TealishItems.TEA_LEAVES.get());
                 output.accept(TealishItems.TEAPOT.get());
                 output.accept(TealishItems.TEA_SEEDS.get());
+                output.accept(TealishItems.LOOSE_LEAF_TEA.get());
             }).build());
 
     public static void register(IEventBus modEventBus){
