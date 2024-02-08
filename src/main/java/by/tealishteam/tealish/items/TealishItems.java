@@ -2,6 +2,7 @@ package by.tealishteam.tealish.items;
 
 import by.tealishteam.tealish.blocks.TealishBlocks;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemNameBlockItem;
@@ -29,6 +30,10 @@ public class TealishItems {
 
     public static final RegistryObject<Item> LOOSE_LEAF_TEA = ITEMS.register("loose_leaf_tea",
             () -> new LooseLeafTea(new Item.Properties())
+    );
+
+    public static final RegistryObject<Item> TEA = ITEMS.register("tea",
+            () -> new Tea(new Item.Properties().food(new FoodProperties.Builder().build()))
     );
 
     public static final RegistryObject<Item> TEA_SEEDS = ITEMS.register("tea_seeds", () -> new ItemNameBlockItem(TealishBlocks.TEA_LEAVES_CROP.get(), new Item.Properties()));
