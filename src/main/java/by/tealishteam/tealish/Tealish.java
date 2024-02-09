@@ -4,10 +4,13 @@ import by.tealishteam.tealish.blocks.TealishBlockEntityTypes;
 import by.tealishteam.tealish.blocks.TealishBlocks;
 import by.tealishteam.tealish.items.TealishCreativeModeTab;
 import by.tealishteam.tealish.items.TealishItems;
+import by.tealishteam.tealish.items.colors.LooseLeafTeaColor;
+import by.tealishteam.tealish.items.colors.TeaColor;
 import by.tealishteam.tealish.menus.TealishMenuTypes;
 import by.tealishteam.tealish.recipes.TealishRecipes;
 import com.mojang.logging.LogUtils;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -32,6 +35,7 @@ public class Tealish
 
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::colorSetup);
 
         // Register the Deferred Register to the mod event bus so blocks get registered
         TealishBlocks.register(modEventBus);
@@ -61,6 +65,12 @@ public class Tealish
         LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
 
         Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
+    }
+
+    private void colorSetup(final RegisterColorHandlersEvent.Item event)
+    {
+        event.register(new LooseLeafTeaColor(), TealishItems.LOOSE_LEAF_TEA.get());
+        event.register(new TeaColor(), TealishItems.TEA.get());
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
