@@ -1,20 +1,21 @@
 package by.tealishteam.tealish.blocks;
 
+import by.tealishteam.tealish.menus.TeapotMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.HopperMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TeapotEntity extends BaseContainerBlockEntity {
-    private NonNullList<ItemStack> items = NonNullList.withSize(5, ItemStack.EMPTY);
+    private NonNullList<ItemStack> items = NonNullList.withSize(TeapotMenu.SLOT_COUNT, ItemStack.EMPTY);
 
     public TeapotEntity(BlockPos pos, BlockState state) {
         super(TealishBlockEntityTypes.TEAPOT.get(), pos, state);
@@ -25,17 +26,30 @@ public class TeapotEntity extends BaseContainerBlockEntity {
     }
 
     protected AbstractContainerMenu createMenu(int menuType, Inventory inventory) {
-        return new HopperMenu(menuType, inventory, this);
+        return new TeapotMenu(menuType, inventory, this);
+    }
+
+    @Override
+    public void load(CompoundTag compoundTag) {
+        super.load(compoundTag);
+        this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(compoundTag, this.items);
     }
 
     @Override
     public int getContainerSize() {
-        return 5;
+        return this.items.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        for(ItemStack itemstack : this.items) {
+            if (!itemstack.isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override

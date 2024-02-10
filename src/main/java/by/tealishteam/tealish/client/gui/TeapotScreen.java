@@ -1,5 +1,6 @@
 package by.tealishteam.tealish.client.gui;
 
+import by.tealishteam.tealish.Tealish;
 import by.tealishteam.tealish.menus.TeapotMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -8,11 +9,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class TeapotScreen extends AbstractContainerScreen<TeapotMenu> {
-    private static final ResourceLocation TEAPOT_LOCATION = new ResourceLocation("textures/gui/container/teapot.png");
+    private static final ResourceLocation TEAPOT_LOCATION = new ResourceLocation(Tealish.MODID,"textures/gui/container/teapot.png");
 
     public TeapotScreen(TeapotMenu teapotMenu, Inventory inventory, Component component) {
         super(teapotMenu, inventory, component);
-        this.imageHeight = 133;
+        this.imageHeight = 166;
         this.inventoryLabelY = this.imageHeight - 94;
     }
 
