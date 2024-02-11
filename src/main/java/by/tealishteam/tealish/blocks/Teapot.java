@@ -10,6 +10,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -18,7 +20,9 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class Teapot extends Block implements EntityBlock {
+import javax.annotation.Nullable;
+
+public class Teapot extends BaseEntityBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     private static final VoxelShape BASE = Block.box(4.0D, 0.0D, 4.0D, 12.0D, 2.0D, 12.0D);
     private static final VoxelShape SIDE_N = Block.box(4.0D, 2.0D, 3.0D,4.0D, 8.0D, 4.0D);
@@ -58,6 +62,10 @@ public class Teapot extends Block implements EntityBlock {
         return AABB;
     }
 
+    public RenderShape getRenderShape(BlockState p_49232_) {
+        return RenderShape.MODEL;
+    }
+
     public BlockState rotate(BlockState p_48811_, Rotation p_48812_) {
         return p_48811_.setValue(FACING, p_48812_.rotate(p_48811_.getValue(FACING)));
     }
@@ -69,5 +77,10 @@ public class Teapot extends Block implements EntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new TeapotEntity(pos, state);
+    }
+
+    @Nullable
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        return level.isClientSide ? null : createTickerHelper(blockEntityType, TealishBlockEntityTypes.TEAPOT.get(), TeapotEntity::serverTick);
     }
 }
