@@ -31,7 +31,7 @@ public class TeapotEntity extends BaseContainerBlockEntity {
     private int litTime;
     private int litDuration;
     private int cookingProgress;
-    private int cookingTotalTime;
+    private int cookingTotalTime = 200;
 
     private NonNullList<ItemStack> items = NonNullList.withSize(TeapotMenu.SLOT_COUNT, ItemStack.EMPTY);
 
