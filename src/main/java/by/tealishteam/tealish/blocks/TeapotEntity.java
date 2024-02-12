@@ -9,16 +9,32 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
+
+import java.util.Optional;
 
 public class TeapotEntity extends BaseContainerBlockEntity {
     public static final int DATA_LIT_TIME = 0;
@@ -32,6 +48,7 @@ public class TeapotEntity extends BaseContainerBlockEntity {
     private int litDuration;
     private int cookingProgress;
     private int cookingTotalTime = 200;
+    private FluidTank waterTank;
 
     private NonNullList<ItemStack> items = NonNullList.withSize(TeapotMenu.SLOT_COUNT, ItemStack.EMPTY);
 
@@ -75,6 +92,7 @@ public class TeapotEntity extends BaseContainerBlockEntity {
 
     public TeapotEntity(BlockPos pos, BlockState state) {
         super(TealishBlockEntityTypes.TEAPOT.get(), pos, state);
+        waterTank = new FluidTank(FluidType.BUCKET_VOLUME);
     }
 
     protected Component getDefaultName() {
@@ -187,6 +205,57 @@ public class TeapotEntity extends BaseContainerBlockEntity {
             teapot.cookingProgress = Mth.clamp(teapot.cookingProgress - 2, 0, teapot.cookingTotalTime);
         }
 
+    }
+
+    public InteractionResult attemptUseFluidItem(Player player, InteractionHand hand) {
+        if(player.level().isClientSide()){
+            return InteractionResult.PASS;
+        }
+
+        if(!player.hasItemInSlot(EquipmentSlot.MAINHAND) || hand != InteractionHand.MAIN_HAND){
+            return InteractionResult.PASS;
+        }
+
+        ItemStack heldStack = player.getMainHandItem();
+        if (heldStack.getItem() == Items.BUCKET) {
+            if(waterTank.getFluidAmount() < FluidType.BUCKET_VOLUME){
+                return InteractionResult.PASS;
+            }
+
+            FluidStack outStack = drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.EXECUTE);
+            ItemStack filledBucket = new ItemStack(outStack.getFluid().getBucket(), 1);
+            if (heldStack.getCount() == 1) {
+                player.setItemInHand(hand, filledBucket);
+            } else {
+                heldStack.shrink(1);
+                if (!player.addItem(filledBucket)) {
+                    player.drop(filledBucket, true);
+                }
+            }
+
+            return InteractionResult.CONSUME;
+
+        } else if (heldStack.getItem() instanceof BucketItem filledBucket) {
+            FluidStack bucketContent = new FluidStack(filledBucket.getFluid(), FluidType.BUCKET_VOLUME);
+            if (waterTank.fill(bucketContent, IFluidHandler.FluidAction.SIMULATE) == FluidType.BUCKET_VOLUME) {//can fit entire bucket in tank?
+                waterTank.fill(bucketContent, IFluidHandler.FluidAction.EXECUTE);
+                player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.BUCKET, 1));
+                return InteractionResult.CONSUME;
+            }
+        }
+
+        return InteractionResult.PASS;
+    }
+
+    public FluidStack drain(int amount, IFluidHandler.FluidAction action) {
+        FluidStack currentFluid = waterTank.getFluid();
+
+        if(amount > currentFluid.getAmount()){
+            waterTank.drain(currentFluid.getAmount(), action);
+            return FluidStack.EMPTY;
+        }
+
+        return waterTank.drain(amount, action);
     }
 
     private boolean isLit() {

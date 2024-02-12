@@ -40,15 +40,21 @@ public class Teapot extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState blockState, Level worldIn, BlockPos blockPos, Player player, InteractionHand handIn, BlockHitResult blockHitResult){
+    public InteractionResult use(BlockState blockState, Level worldIn, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult blockHitResult){
 
         if(worldIn.isClientSide){
             return InteractionResult.SUCCESS;
         }
 
         BlockEntity blockentity = worldIn.getBlockEntity(blockPos);
-        if (blockentity instanceof TeapotEntity) {
-            player.openMenu((TeapotEntity)blockentity);
+        if (!(blockentity instanceof TeapotEntity)) {
+            return InteractionResult.PASS;
+        }
+
+        TeapotEntity teapotEntity = (TeapotEntity) blockentity;
+
+        if(teapotEntity.attemptUseFluidItem(player, hand) == InteractionResult.PASS){
+            player.openMenu(teapotEntity);
         }
 
         return InteractionResult.CONSUME;
