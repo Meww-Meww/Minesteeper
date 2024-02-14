@@ -2,10 +2,15 @@ package by.tealishteam.tealish.blocks;
 
 import by.tealishteam.tealish.items.LooseLeafTea;
 import by.tealishteam.tealish.menus.TeapotMenu;
+import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -21,29 +26,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-import java.util.Optional;
-
 public class TeapotEntity extends BaseContainerBlockEntity {
-    public static final int DATA_LIT_TIME = 0;
-    public static final int DATA_LIT_DURATION = 1;
-    public static final int DATA_COOKING_PROGRESS = 2;
-    public static final int DATA_COOKING_TOTAL_TIME = 3;
-
-    public static final int DATA_COUNT = 4;
-
     private int litTime;
     private int litDuration;
     private int cookingProgress;
@@ -51,44 +43,6 @@ public class TeapotEntity extends BaseContainerBlockEntity {
     private FluidTank waterTank;
 
     private NonNullList<ItemStack> items = NonNullList.withSize(TeapotMenu.SLOT_COUNT, ItemStack.EMPTY);
-
-    protected final ContainerData dataAccess = new ContainerData() {
-        public int get(int type) {
-            switch (type) {
-                case DATA_LIT_TIME:
-                    return TeapotEntity.this.litTime;
-                case DATA_LIT_DURATION:
-                    return TeapotEntity.this.litDuration;
-                case DATA_COOKING_PROGRESS:
-                    return TeapotEntity.this.cookingProgress;
-                case DATA_COOKING_TOTAL_TIME:
-                    return TeapotEntity.this.cookingTotalTime;
-                default:
-                    return 0;
-            }
-        }
-
-        public void set(int type, int value) {
-            switch (type) {
-                case DATA_LIT_TIME:
-                    TeapotEntity.this.litTime = value;
-                    break;
-                case DATA_LIT_DURATION:
-                    TeapotEntity.this.litDuration = value;
-                    break;
-                case DATA_COOKING_PROGRESS:
-                    TeapotEntity.this.cookingProgress = value;
-                    break;
-                case DATA_COOKING_TOTAL_TIME:
-                    TeapotEntity.this.cookingTotalTime = value;
-            }
-
-        }
-
-        public int getCount() {
-            return DATA_COUNT;
-        }
-    };
 
     public TeapotEntity(BlockPos pos, BlockState state) {
         super(TealishBlockEntityTypes.TEAPOT.get(), pos, state);
@@ -100,7 +54,9 @@ public class TeapotEntity extends BaseContainerBlockEntity {
     }
 
     protected AbstractContainerMenu createMenu(int menuType, Inventory inventory) {
-        return new TeapotMenu(menuType, inventory, this, dataAccess);
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        buffer.writeBlockPos(worldPosition);
+        return new TeapotMenu(menuType, inventory, buffer);
     }
 
     @Override
@@ -108,6 +64,27 @@ public class TeapotEntity extends BaseContainerBlockEntity {
         super.load(compoundTag);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(compoundTag, this.items);
+        this.waterTank.readFromNBT(compoundTag.getCompound("Fluid"));
+    }
+
+    @Override
+    public void saveAdditional(CompoundTag compound){
+        super.saveAdditional(compound);
+        ContainerHelper.saveAllItems(compound, this.items);
+        compound.put("Fluid", waterTank.writeToNBT(new CompoundTag()));
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag data = super.getUpdateTag();
+        this.saveAdditional(data);
+        return data;
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag syncData) {
+        super.handleUpdateTag(syncData);
+        this.load(syncData);
     }
 
     @Override
@@ -160,6 +137,11 @@ public class TeapotEntity extends BaseContainerBlockEntity {
         this.getItems().clear();
     }
 
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
     public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, TeapotEntity teapot) {
         if (teapot.isLit()) {
             teapot.litTime--;
@@ -207,7 +189,8 @@ public class TeapotEntity extends BaseContainerBlockEntity {
 
     }
 
-    public InteractionResult attemptUseFluidItem(Player player, InteractionHand hand) {
+    public InteractionResult attemptUseFluidItem(Player player, InteractionHand hand, Level level, BlockState blockState, BlockPos blockPos) {
+        System.out.println(waterTank.getFluidAmount());
         if(player.level().isClientSide()){
             return InteractionResult.PASS;
         }
@@ -233,6 +216,7 @@ public class TeapotEntity extends BaseContainerBlockEntity {
                 }
             }
 
+            this.setChanged();
             return InteractionResult.CONSUME;
 
         } else if (heldStack.getItem() instanceof BucketItem filledBucket) {
@@ -240,6 +224,9 @@ public class TeapotEntity extends BaseContainerBlockEntity {
             if (waterTank.fill(bucketContent, IFluidHandler.FluidAction.SIMULATE) == FluidType.BUCKET_VOLUME) {//can fit entire bucket in tank?
                 waterTank.fill(bucketContent, IFluidHandler.FluidAction.EXECUTE);
                 player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.BUCKET, 1));
+
+                level.sendBlockUpdated(blockPos, blockState, this.getBlockState(), Block.UPDATE_CLIENTS);
+                this.setChanged();
                 return InteractionResult.CONSUME;
             }
         }
@@ -258,8 +245,25 @@ public class TeapotEntity extends BaseContainerBlockEntity {
         return waterTank.drain(amount, action);
     }
 
-    private boolean isLit() {
+    public boolean isLit() {
         return this.litTime > 0;
+    }
+
+    public float getLitProgress() {
+        int duration = litDuration;
+        if (litDuration == 0) {
+            duration = 200;
+        }
+
+        return Mth.clamp((float)litTime / (float)duration, 0.0F, 1.0F);
+    }
+
+    public float getBurnProgress() {
+        return cookingTotalTime != 0 &&cookingProgress != 0 ? Mth.clamp((float)cookingProgress / (float)cookingTotalTime, 0.0F, 1.0F) : 0.0F;
+    }
+
+    public FluidTank getFluidTank() {
+        return waterTank;
     }
 
     private boolean canBurn(NonNullList<ItemStack> teapotItems) {

@@ -19,6 +19,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.extensions.IForgeServerPlayer;
 
 import javax.annotation.Nullable;
 
@@ -53,8 +54,8 @@ public class Teapot extends BaseEntityBlock {
 
         TeapotEntity teapotEntity = (TeapotEntity) blockentity;
 
-        if(teapotEntity.attemptUseFluidItem(player, hand) == InteractionResult.PASS){
-            player.openMenu(teapotEntity);
+        if(teapotEntity.attemptUseFluidItem(player, hand, worldIn, blockState, blockPos) == InteractionResult.PASS){
+            ((IForgeServerPlayer)player).openMenu(teapotEntity, blockPos);
         }
 
         return InteractionResult.CONSUME;
