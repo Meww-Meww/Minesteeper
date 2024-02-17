@@ -7,11 +7,17 @@ import by.tealishteam.tealish.items.TealishItems;
 import by.tealishteam.tealish.items.colors.LooseLeafTeaColor;
 import by.tealishteam.tealish.items.colors.TeaColor;
 import by.tealishteam.tealish.menus.TealishMenuTypes;
+import by.tealishteam.tealish.recipes.TealishRecipeProvider;
 import by.tealishteam.tealish.recipes.TealishRecipes;
 import com.mojang.logging.LogUtils;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,6 +42,7 @@ public class Tealish
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::colorSetup);
+        modEventBus.addListener(this::gatherData);
 
         // Register the Deferred Register to the mod event bus so blocks get registered
         TealishBlocks.register(modEventBus);
@@ -71,6 +78,14 @@ public class Tealish
     {
         event.register(new LooseLeafTeaColor(), TealishItems.LOOSE_LEAF_TEA.get());
         event.register(new TeaColor(), TealishItems.TEA.get());
+    }
+
+    public void gatherData(GatherDataEvent event) {
+        DataGenerator generator = event.getGenerator();
+        PackOutput packOutput = generator.getPackOutput();
+
+        TealishRecipeProvider tealishRecipes = new TealishRecipeProvider(packOutput);
+        generator.addProvider(true, tealishRecipes);
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

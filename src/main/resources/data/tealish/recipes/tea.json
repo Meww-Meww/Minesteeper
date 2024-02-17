@@ -1,0 +1,14 @@
+{
+  "type": "tealish:teapot",
+  "inputFluid": {
+    "Amount": 1000,
+    "FluidName": "minecraft:water"
+  },
+  "outputFluid": {
+    "Amount": 1000,
+    "FluidName": "minecraft:water"
+  },
+  "input": {
+    "item": "tealish:loose_leaf_tea"
+  }
+}

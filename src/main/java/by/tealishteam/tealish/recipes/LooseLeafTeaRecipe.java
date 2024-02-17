@@ -17,7 +17,6 @@ import java.util.List;
 public class LooseLeafTeaRecipe extends CustomRecipe {
     public LooseLeafTeaRecipe(CraftingBookCategory craftingBookCategory) {
         super(craftingBookCategory);
-        System.out.println("REGISTERED");
     }
 
     @Override
