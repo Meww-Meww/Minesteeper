@@ -16,7 +16,7 @@ import static by.tealishteam.tealish.Tealish.MODID;
 
 public class TealishMenuTypes {
     private static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
-    public static final RegistryObject<MenuType<TeapotMenu>> TEAPOT_MENU = MENU_TYPES.register("teapot", () -> IForgeMenuType.create(TeapotMenu::new));
+    public static final RegistryObject<MenuType<TeapotMenu>> TEAPOT_MENU = MENU_TYPES.register("teapot", () -> new MenuType<>(TeapotMenu::new, FeatureFlags.DEFAULT_FLAGS));
 
     public static void register(IEventBus modEventBus){
         MENU_TYPES.register(modEventBus);

@@ -7,13 +7,12 @@ import by.tealishteam.tealish.items.TealishItems;
 import by.tealishteam.tealish.items.colors.LooseLeafTeaColor;
 import by.tealishteam.tealish.items.colors.TeaColor;
 import by.tealishteam.tealish.menus.TealishMenuTypes;
+import by.tealishteam.tealish.network.NetworkHandler;
 import by.tealishteam.tealish.recipes.TealishRecipeProvider;
 import by.tealishteam.tealish.recipes.TealishRecipes;
 import com.mojang.logging.LogUtils;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -43,6 +42,8 @@ public class Tealish
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::colorSetup);
         modEventBus.addListener(this::gatherData);
+
+        NetworkHandler.register();
 
         // Register the Deferred Register to the mod event bus so blocks get registered
         TealishBlocks.register(modEventBus);

@@ -1,23 +1,22 @@
 package by.tealishteam.tealish.blocks;
 
 import by.tealishteam.tealish.menus.TeapotMenu;
+import by.tealishteam.tealish.network.NetworkHandler;
+import by.tealishteam.tealish.network.packets.SyncTeapotMenu;
 import by.tealishteam.tealish.recipes.TealishRecipes;
 import by.tealishteam.tealish.recipes.TeapotRecipe;
-import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -33,15 +32,25 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 
 public class TeapotEntity extends BaseContainerBlockEntity implements Container {
+
+    public static final int DATA_LIT_TIME = 0;
+    public static final int DATA_LIT_DURATION = 1;
+    public static final int DATA_COOKING_PROGRESS = 2;
+    public static final int DATA_COOKING_TOTAL_TIME = 3;
+    public static final int DATA_COUNT = 4;
+
+    public static final int CAPACITY = FluidType.BUCKET_VOLUME;
+
     public int litTime;
     private int litDuration;
     private int cookingProgress;
     private int cookingTotalTime = 200;
-    private FluidTank waterTank = new FluidTank(FluidType.BUCKET_VOLUME);
+    private FluidTank waterTank = new FluidTank(CAPACITY);
 
     private NonNullList<ItemStack> items = NonNullList.withSize(TeapotMenu.SLOT_COUNT, ItemStack.EMPTY);
 
@@ -49,6 +58,42 @@ public class TeapotEntity extends BaseContainerBlockEntity implements Container 
 
     private final RecipeManager.CachedCheck<TeapotRecipe.Container, TeapotRecipe> quickCheck = RecipeManager.createCheck(TealishRecipes.TEAPOT_RECIPE_TYPE.get());
     private TeapotRecipe.Container container = new TeapotRecipe.Container(itemHandler, waterTank);
+
+    protected final ContainerData dataAccess = new ContainerData() {
+        public int get(int type) {
+            switch (type) {
+                case DATA_LIT_TIME:
+                    return TeapotEntity.this.litTime;
+                case DATA_LIT_DURATION:
+                    return TeapotEntity.this.litDuration;
+                case DATA_COOKING_PROGRESS:
+                    return TeapotEntity.this.cookingProgress;
+                case DATA_COOKING_TOTAL_TIME:
+                    return TeapotEntity.this.cookingTotalTime;
+                default:
+                    return 0;
+            }
+        }
+
+        public void set(int type, int value) {
+            switch (type) {
+                case DATA_LIT_TIME:
+                    TeapotEntity.this.litTime = value;
+                    break;
+                case DATA_LIT_DURATION:
+                    TeapotEntity.this.litDuration = value;
+                    break;
+                case DATA_COOKING_PROGRESS:
+                    TeapotEntity.this.cookingProgress = value;
+                    break;
+                case DATA_COOKING_TOTAL_TIME:
+                    TeapotEntity.this.cookingTotalTime = value;
+            }
+        }
+        public int getCount() {
+            return DATA_COUNT;
+        }
+    };
 
     public TeapotEntity(BlockPos pos, BlockState state) {
         super(TealishBlockEntityTypes.TEAPOT.get(), pos, state);
@@ -59,9 +104,7 @@ public class TeapotEntity extends BaseContainerBlockEntity implements Container 
     }
 
     protected AbstractContainerMenu createMenu(int menuType, Inventory inventory) {
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-        buffer.writeBlockPos(worldPosition);
-        return new TeapotMenu(menuType, inventory, buffer);
+        return new TeapotMenu(menuType, inventory, this, dataAccess, this.getBlockPos());
     }
 
     @Override
@@ -144,15 +187,11 @@ public class TeapotEntity extends BaseContainerBlockEntity implements Container 
         this.getItems().clear();
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
     public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, TeapotEntity teapot) {
+        boolean updated = false;
         if (teapot.isLit()) {
             teapot.litTime--;
-            teapot.setChanged();
+            updated = true;
         }
 
         ItemStack fuel = teapot.items.get(TeapotMenu.FUEL_SLOT);
@@ -182,7 +221,6 @@ public class TeapotEntity extends BaseContainerBlockEntity implements Container 
                         }
                     }
                 }
-                teapot.setChanged();
             }
 
             if (teapot.isLit() && teapot.canBurn(recipeHolder, teapot.getItems(), level)) {
@@ -191,13 +229,17 @@ public class TeapotEntity extends BaseContainerBlockEntity implements Container 
                     teapot.cookingProgress = 0;
                     teapot.burn(recipeHolder, teapot.getItems(), level);
                 }
-                teapot.setChanged();
+                updated = true;
             } else {
                 teapot.cookingProgress = 0;
-                teapot.setChanged();
+                updated = true;
             }
         } else if (!teapot.isLit() && teapot.cookingProgress > 0) {
             teapot.cookingProgress = Mth.clamp(teapot.cookingProgress - 2, 0, teapot.cookingTotalTime);
+            updated = true;
+        }
+
+        if(updated){
             teapot.setChanged();
         }
     }
@@ -228,6 +270,7 @@ public class TeapotEntity extends BaseContainerBlockEntity implements Container 
                 }
             }
 
+            this.sendUpdatePacket();
             this.setChanged();
             return InteractionResult.CONSUME;
 
@@ -237,6 +280,7 @@ public class TeapotEntity extends BaseContainerBlockEntity implements Container 
                 waterTank.fill(bucketContent, IFluidHandler.FluidAction.EXECUTE);
                 player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.BUCKET, 1));
 
+                this.sendUpdatePacket();
                 this.setChanged();
                 return InteractionResult.CONSUME;
             }
@@ -260,21 +304,12 @@ public class TeapotEntity extends BaseContainerBlockEntity implements Container 
         return this.litTime > 0;
     }
 
-    public float getLitProgress() {
-        int duration = litDuration;
-        if (litDuration == 0) {
-            duration = 200;
-        }
-
-        return Mth.clamp((float)litTime / (float)duration, 0.0F, 1.0F);
+    public void sendFluidInfo(ServerPlayer player){
+        NetworkHandler.channel.send(new SyncTeapotMenu(waterTank.getFluid()), PacketDistributor.PLAYER.with(player));
     }
 
-    public float getBurnProgress() {
-        return cookingTotalTime != 0 &&cookingProgress != 0 ? Mth.clamp((float)cookingProgress / (float)cookingTotalTime, 0.0F, 1.0F) : 0.0F;
-    }
-
-    public FluidTank getFluidTank() {
-        return waterTank;
+    private void sendUpdatePacket(){
+        NetworkHandler.channel.send(new SyncTeapotMenu(waterTank.getFluid()), PacketDistributor.TRACKING_CHUNK.with(level.getChunkAt(getBlockPos())));
     }
 
     private boolean canBurn(@Nullable RecipeHolder<?> recipe, NonNullList<ItemStack> items, Level level) {

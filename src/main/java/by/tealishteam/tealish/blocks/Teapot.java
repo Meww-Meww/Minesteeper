@@ -55,7 +55,7 @@ public class Teapot extends BaseEntityBlock {
         TeapotEntity teapotEntity = (TeapotEntity) blockentity;
 
         if(teapotEntity.attemptUseFluidItem(player, hand, worldIn, blockState, blockPos) == InteractionResult.PASS){
-            ((IForgeServerPlayer)player).openMenu(teapotEntity, blockPos);
+            player.openMenu(teapotEntity);
         }
 
         return InteractionResult.CONSUME;
