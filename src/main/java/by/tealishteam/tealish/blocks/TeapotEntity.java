@@ -1,7 +1,8 @@
 package by.tealishteam.tealish.blocks;
 
-import by.tealishteam.tealish.items.LooseLeafTea;
 import by.tealishteam.tealish.menus.TeapotMenu;
+import by.tealishteam.tealish.recipes.TealishRecipes;
+import by.tealishteam.tealish.recipes.TeapotRecipe;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -12,21 +13,18 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
-import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.*;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
@@ -34,19 +32,26 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.items.ItemStackHandler;
 
-public class TeapotEntity extends BaseContainerBlockEntity {
-    private int litTime;
+import javax.annotation.Nullable;
+
+public class TeapotEntity extends BaseContainerBlockEntity implements Container {
+    public int litTime;
     private int litDuration;
     private int cookingProgress;
     private int cookingTotalTime = 200;
-    private FluidTank waterTank;
+    private FluidTank waterTank = new FluidTank(FluidType.BUCKET_VOLUME);
 
     private NonNullList<ItemStack> items = NonNullList.withSize(TeapotMenu.SLOT_COUNT, ItemStack.EMPTY);
 
+    private ItemStackHandler itemHandler = new ItemStackHandler(items);
+
+    private final RecipeManager.CachedCheck<TeapotRecipe.Container, TeapotRecipe> quickCheck = RecipeManager.createCheck(TealishRecipes.TEAPOT_RECIPE_TYPE.get());
+    private TeapotRecipe.Container container = new TeapotRecipe.Container(itemHandler, waterTank);
+
     public TeapotEntity(BlockPos pos, BlockState state) {
         super(TealishBlockEntityTypes.TEAPOT.get(), pos, state);
-        waterTank = new FluidTank(FluidType.BUCKET_VOLUME);
     }
 
     protected Component getDefaultName() {
@@ -64,7 +69,9 @@ public class TeapotEntity extends BaseContainerBlockEntity {
         super.load(compoundTag);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(compoundTag, this.items);
+        itemHandler = new ItemStackHandler(items);
         this.waterTank.readFromNBT(compoundTag.getCompound("Fluid"));
+        container = new TeapotRecipe.Container(itemHandler, waterTank);
     }
 
     @Override
@@ -145,14 +152,22 @@ public class TeapotEntity extends BaseContainerBlockEntity {
     public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, TeapotEntity teapot) {
         if (teapot.isLit()) {
             teapot.litTime--;
+            teapot.setChanged();
         }
 
-        ItemStack fuel = teapot.items.get(1);
-        ItemStack ingredient = teapot.items.get(0);
-        boolean hasTeaLeaves = ingredient.getItem() instanceof LooseLeafTea;
+        ItemStack fuel = teapot.items.get(TeapotMenu.FUEL_SLOT);
+        ItemStack ingredient = teapot.items.get(TeapotMenu.INGREDIENT_SLOT);
+        boolean hasInput = !ingredient.isEmpty();
         boolean hasFuel = !fuel.isEmpty();
-        if (teapot.isLit() || hasTeaLeaves && hasFuel) {
-            if (!teapot.isLit() && teapot.canBurn(teapot.getItems())) {
+        if (teapot.isLit() || hasInput && hasFuel) {
+            RecipeHolder<?> recipeHolder;
+            if (hasInput) {
+                recipeHolder = teapot.quickCheck.getRecipeFor(teapot.container, level).orElse(null);
+            } else {
+                recipeHolder = null;
+            }
+
+            if (!teapot.isLit() && teapot.canBurn(recipeHolder, teapot.getItems(), level)) {
                 teapot.litTime = teapot.getBurnDuration(fuel);
                 teapot.litDuration = teapot.litTime;
                 if (teapot.isLit()) {
@@ -167,30 +182,27 @@ public class TeapotEntity extends BaseContainerBlockEntity {
                         }
                     }
                 }
+                teapot.setChanged();
             }
 
-            if (teapot.isLit() && teapot.canBurn(teapot.getItems())) {
+            if (teapot.isLit() && teapot.canBurn(recipeHolder, teapot.getItems(), level)) {
                 teapot.cookingProgress++;
                 if (teapot.cookingProgress == teapot.cookingTotalTime) {
                     teapot.cookingProgress = 0;
-                    //teapot.cookingTotalTime = getTotalCookTime(p_155014_, p_155017_);
-                    teapot.burn(teapot.getItems());
-                    //if (teapot.burn(teapot.getItems())) {
-                        // TODO logic for producing tea fluid
-                        //p_155017_.setRecipeUsed(recipeholder);
-                    //}
+                    teapot.burn(recipeHolder, teapot.getItems(), level);
                 }
+                teapot.setChanged();
             } else {
                 teapot.cookingProgress = 0;
+                teapot.setChanged();
             }
         } else if (!teapot.isLit() && teapot.cookingProgress > 0) {
             teapot.cookingProgress = Mth.clamp(teapot.cookingProgress - 2, 0, teapot.cookingTotalTime);
+            teapot.setChanged();
         }
-
     }
 
     public InteractionResult attemptUseFluidItem(Player player, InteractionHand hand, Level level, BlockState blockState, BlockPos blockPos) {
-        System.out.println(waterTank.getFluidAmount());
         if(player.level().isClientSide()){
             return InteractionResult.PASS;
         }
@@ -225,7 +237,6 @@ public class TeapotEntity extends BaseContainerBlockEntity {
                 waterTank.fill(bucketContent, IFluidHandler.FluidAction.EXECUTE);
                 player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.BUCKET, 1));
 
-                level.sendBlockUpdated(blockPos, blockState, this.getBlockState(), Block.UPDATE_CLIENTS);
                 this.setChanged();
                 return InteractionResult.CONSUME;
             }
@@ -266,9 +277,11 @@ public class TeapotEntity extends BaseContainerBlockEntity {
         return waterTank;
     }
 
-    private boolean canBurn(NonNullList<ItemStack> teapotItems) {
-        // TODO add logic for when teapot has tea
-        return true;
+    private boolean canBurn(@Nullable RecipeHolder<?> recipe, NonNullList<ItemStack> items, Level level) {
+        if (!items.get(TeapotMenu.INGREDIENT_SLOT).isEmpty() && recipe != null) {
+            return ((RecipeHolder<TeapotRecipe>)recipe).value().matches(container, level);
+        }
+        return false;
     }
 
    private int getBurnDuration(ItemStack fuel) {
@@ -279,9 +292,9 @@ public class TeapotEntity extends BaseContainerBlockEntity {
         }
    }
 
-    private boolean burn(NonNullList<ItemStack> teapotItems) {
-        if (this.canBurn(teapotItems)) {
-            ItemStack ingredient = teapotItems.get(0);
+    private boolean burn(@Nullable RecipeHolder<?> recipe, NonNullList<ItemStack> items, Level level) {
+        if (this.canBurn(recipe, items, level)) {
+            ItemStack ingredient = items.get(TeapotMenu.INGREDIENT_SLOT);
             ingredient.shrink(1);
             return true;
         } else {

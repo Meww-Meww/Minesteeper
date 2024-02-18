@@ -30,8 +30,6 @@ public class TeapotScreen extends AbstractContainerScreen<TeapotMenu> {
         this.imageHeight = 166;
         this.inventoryLabelY = this.imageHeight - 94;
         this.teapot = teapotMenu.teapot;
-
-        System.out.println(this.teapot.getFluidTank().getFluidAmount());
     }
 
     public void render(GuiGraphics graphics, int p_282102_, int p_282423_, float p_282621_) {
@@ -44,6 +42,7 @@ public class TeapotScreen extends AbstractContainerScreen<TeapotMenu> {
         int menuY = (this.height - this.imageHeight) / 2;
         graphics.blit(TEAPOT_LOCATION, menuX, menuY, 0, 0, this.imageWidth, this.imageHeight);
         if (this.teapot.isLit()) {
+            System.out.println(this.teapot.isLit());
             int height = 14;
             int width = 14;
             int unrenderedHeight = Mth.ceil(this.teapot.getLitProgress() * (float)(height - 1)) + 1;

@@ -25,7 +25,6 @@ public class TeapotMenu extends AbstractContainerMenu {
         this.teapot = (TeapotEntity) entity;
 
         this.teapot.startOpen(inv.player);
-        System.out.println("menu init " + this.teapot.getFluidTank().getFluid().getAmount() + " " + inv.player.level().isClientSide());
 
         this.addSlot(new Slot(this.teapot, INGREDIENT_SLOT, 40, 17));
         this.addSlot(new Slot(this.teapot, FUEL_SLOT, 40, 53));

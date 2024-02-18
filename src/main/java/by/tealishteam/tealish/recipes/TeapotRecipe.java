@@ -47,7 +47,6 @@ public class TeapotRecipe implements Recipe<TeapotRecipe.Container> {
             !container.getFluidTank().getFluid().isFluidEqual(inputFluid)) {
             return false;
         }
-System.out.println("TEST: " + container.getFluidTank().getFluid() + " + " + inputFluid.getDisplayName());
         return input.test(container.getItem(TeapotMenu.INGREDIENT_SLOT));
     }
 
@@ -99,7 +98,6 @@ System.out.println("TEST: " + container.getFluidTank().getFluid() + " + " + inpu
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, TeapotRecipe recipe) {
-            System.out.println(recipe.inputFluid.getDisplayName() + " + " + recipe.outputFluid.getDisplayName());
             buffer.writeFluidStack(recipe.inputFluid);
             buffer.writeFluidStack(recipe.outputFluid);
             recipe.input.toNetwork(buffer);

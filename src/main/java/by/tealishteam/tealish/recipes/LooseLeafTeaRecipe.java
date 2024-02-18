@@ -64,7 +64,6 @@ public class LooseLeafTeaRecipe extends CustomRecipe {
 
     @Override
     public boolean canCraftInDimensions(int width, int height) {
-        System.out.println("CAN CRAFT");
         return true;
     }
 
