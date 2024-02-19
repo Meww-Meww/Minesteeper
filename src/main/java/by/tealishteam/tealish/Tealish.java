@@ -3,10 +3,10 @@ package by.tealishteam.tealish;
 import by.tealishteam.tealish.blocks.TealishBlockEntityTypes;
 import by.tealishteam.tealish.blocks.TealishBlocks;
 import by.tealishteam.tealish.fluids.TealishFluids;
+import by.tealishteam.tealish.items.LooseLeafTea;
+import by.tealishteam.tealish.items.Tea;
 import by.tealishteam.tealish.items.TealishCreativeModeTab;
 import by.tealishteam.tealish.items.TealishItems;
-import by.tealishteam.tealish.items.colors.LooseLeafTeaColor;
-import by.tealishteam.tealish.items.colors.TeaColor;
 import by.tealishteam.tealish.menus.TealishMenuTypes;
 import by.tealishteam.tealish.network.NetworkHandler;
 import by.tealishteam.tealish.recipes.TealishRecipeProvider;
@@ -79,8 +79,8 @@ public class Tealish
 
     private void colorSetup(final RegisterColorHandlersEvent.Item event)
     {
-        event.register(new LooseLeafTeaColor(), TealishItems.LOOSE_LEAF_TEA.get());
-        event.register(new TeaColor(), TealishItems.TEA.get());
+        event.register(new LooseLeafTea.LooseLeafTeaColor(), TealishItems.LOOSE_LEAF_TEA.get());
+        event.register(new Tea.TeaColor(), TealishItems.TEA.get());
     }
 
     public void gatherData(GatherDataEvent event) {

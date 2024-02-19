@@ -26,7 +26,7 @@ public class TeaFluid extends Fluid {
     public static FluidStack getFluidStackWithEffects(ItemStack tea, int fluidAmount)
     {
         FluidStack stack = new FluidStack(TealishFluids.TEA_FLUID.get(), fluidAmount);
-        stack.getOrCreateTag().putInt("Color", LooseLeafTea.getColor(tea));
+        stack.getOrCreateTag().putInt("Color", new LooseLeafTea.LooseLeafTeaColor().getColor(tea, 0));
 
         return stack;
     }
