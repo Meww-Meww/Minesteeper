@@ -245,7 +245,7 @@ public class TeapotEntity extends BaseContainerBlockEntity implements Container 
         }
     }
 
-    public InteractionResult attemptUseFluidItem(Player player, InteractionHand hand, Level level, BlockState blockState, BlockPos blockPos) {
+    public InteractionResult attemptUseFluidItem(Player player, InteractionHand hand) {
         if(player.level().isClientSide()){
             return InteractionResult.PASS;
         }
@@ -256,7 +256,7 @@ public class TeapotEntity extends BaseContainerBlockEntity implements Container 
 
         ItemStack heldStack = player.getMainHandItem();
         if (heldStack.getItem() == Items.BUCKET) {
-            if(waterTank.getFluidAmount() < FluidType.BUCKET_VOLUME){
+            if(waterTank.getFluidAmount() < FluidType.BUCKET_VOLUME || waterTank.getFluid().getFluid().getBucket() == null){
                 return InteractionResult.PASS;
             }
 
