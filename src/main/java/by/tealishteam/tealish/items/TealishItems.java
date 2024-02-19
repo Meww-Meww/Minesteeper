@@ -36,6 +36,8 @@ public class TealishItems {
             () -> new Tea(new Item.Properties().food(new FoodProperties.Builder().build()))
     );
 
+    public static final RegistryObject<Item> MUG = ITEMS.register("mug", () -> new Item(new Item.Properties()));
+
     public static final RegistryObject<Item> TEA_SEEDS = ITEMS.register("tea_seeds", () -> new ItemNameBlockItem(TealishBlocks.TEA_LEAVES_CROP.get(), new Item.Properties()));
 
     public static void register(IEventBus modEventBus){

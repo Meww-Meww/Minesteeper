@@ -1,6 +1,7 @@
 package by.tealishteam.tealish.fluids;
 
 import by.tealishteam.tealish.items.LooseLeafTea;
+import by.tealishteam.tealish.items.Tea;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -29,6 +30,10 @@ public class TeaFluid extends Fluid {
         stack.getOrCreateTag().putInt("Color", new LooseLeafTea.LooseLeafTeaColor().getColor(tea, 0));
 
         return stack;
+    }
+
+    public static ItemStack getDrink(FluidStack fluid, int amount){
+        return Tea.fromFluid(fluid, amount);
     }
 
     @Override
@@ -118,7 +123,7 @@ public class TeaFluid extends Fluid {
                 @Override
                 public int getTintColor(FluidStack stack)
                 {
-                    if(!stack.hasTag()) return 0xFFFFFF00;
+                    if(!stack.hasTag()) return 0xFFA2C66A;
                     return 0xFF000000 | stack.getTag().getInt("Color");
                 }
             });

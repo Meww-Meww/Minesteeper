@@ -1,6 +1,7 @@
 package by.tealishteam.tealish.blocks;
 
 import by.tealishteam.tealish.fluids.TeaFluid;
+import by.tealishteam.tealish.items.TealishItems;
 import by.tealishteam.tealish.menus.TeapotMenu;
 import by.tealishteam.tealish.network.NetworkHandler;
 import by.tealishteam.tealish.network.packets.SyncTeapotMenu;
@@ -255,13 +256,27 @@ public class TeapotEntity extends BaseContainerBlockEntity implements Container 
         }
 
         ItemStack heldStack = player.getMainHandItem();
-        if (heldStack.getItem() == Items.BUCKET) {
-            if(waterTank.getFluidAmount() < FluidType.BUCKET_VOLUME || waterTank.getFluid().getFluid().getBucket() == null){
+        if (heldStack.getItem() == Items.BUCKET || heldStack.getItem() == TealishItems.MUG.get()) {
+            if(waterTank.getFluidAmount() < FluidType.BUCKET_VOLUME){
+                return InteractionResult.PASS;
+            }
+
+            if(heldStack.getItem() == Items.BUCKET && waterTank.getFluid().getFluid().getBucket() == null){
+                return InteractionResult.PASS;
+            } else if(heldStack.getItem() == TealishItems.MUG.get() && !(waterTank.getFluid().getFluid() instanceof TeaFluid)){
                 return InteractionResult.PASS;
             }
 
             FluidStack outStack = drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.EXECUTE);
-            ItemStack filledBucket = new ItemStack(outStack.getFluid().getBucket(), 1);
+            ItemStack filledBucket;
+
+            if(outStack.getFluid() instanceof TeaFluid){
+                filledBucket = TeaFluid.getDrink(outStack, 1);
+            }
+            else {
+                filledBucket = new ItemStack(outStack.getFluid().getBucket(), 1);
+            }
+
             if (heldStack.getCount() == 1) {
                 player.setItemInHand(hand, filledBucket);
             } else {
