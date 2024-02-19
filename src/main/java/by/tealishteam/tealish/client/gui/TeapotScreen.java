@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -86,54 +87,53 @@ public class TeapotScreen extends AbstractContainerScreen<TeapotMenu> {
             ResourceLocation still = props.getStillTexture(this.menu.getFluid());
 
             if (still != null) {
-                AbstractTexture texture = minecraft.getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS);
-                if (texture instanceof TextureAtlas atlas) {
-                    TextureAtlasSprite sprite = atlas.getSprite(still);
+                TextureAtlas atlas = minecraft.getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS);
+                TextureAtlasSprite sprite = atlas.getSprite(still);
 
-                    int color = props.getTintColor();
-                    RenderSystem.setShaderColor(
-                            FastColor.ARGB32.red(color) / 255.0F,
-                            FastColor.ARGB32.green(color) / 255.0F,
-                            FastColor.ARGB32.blue(color) / 255.0F,
-                            FastColor.ARGB32.alpha(color) / 255.0F);
-                    RenderSystem.enableBlend();
+                int color = props.getTintColor(this.menu.getFluid());
 
-                    int width = 36;
-                    int height = 52;
-                    int offsetX = menuX + 101;
-                    int offsetY = menuY - 19;
-                    int stored = this.menu.getFluid().getAmount();
-                    float filledVolume = stored / TeapotEntity.CAPACITY;
-                    int renderableHeight = (int) (filledVolume * height);
+                RenderSystem.setShaderColor(
+                        FastColor.ARGB32.red(color) / 255.0F,
+                        FastColor.ARGB32.green(color) / 255.0F,
+                        FastColor.ARGB32.blue(color) / 255.0F,
+                        FastColor.ARGB32.alpha(color) / 255.0F);
+                RenderSystem.enableBlend();
 
-                    int atlasWidth = (int) (sprite.contents().width() / (sprite.getU1() - sprite.getU0()));
-                    int atlasHeight = (int) (sprite.contents().height() / (sprite.getV1() - sprite.getV0()));
+                int width = 36;
+                int height = 52;
+                int offsetX = menuX + 101;
+                int offsetY = menuY - 19;
+                int stored = this.menu.getFluid().getAmount();
+                float filledVolume = stored / TeapotEntity.CAPACITY;
+                int renderableHeight = (int) (filledVolume * height);
 
-                    graphics.pose().pushPose();
-                    graphics.pose().translate(0, height - 16, 0);
-                    for (int i = 0; i < Math.ceil(renderableHeight / 16f); i++) {
-                        for (int j = 0; j < Math.ceil(width / 16f); j++) {
-                            int drawingWidth = Math.min(16, width - j * 16);
-                            int drawingHeight = Math.min(16, renderableHeight - i * 16);
-                            int notDrawingHeight = 16 - drawingHeight;
-                            int notDrawingWidth = 16 - drawingWidth;
+                int atlasWidth = (int) (sprite.contents().width() / (sprite.getU1() - sprite.getU0()));
+                int atlasHeight = (int) (sprite.contents().height() / (sprite.getV1() - sprite.getV0()));
 
-                            graphics.blit(TextureAtlas.LOCATION_BLOCKS,
-                                    offsetX + j * 16,
-                                    offsetY + i * 16,
-                                    0,
-                                    sprite.getU0() * atlasWidth + notDrawingWidth,
-                                    sprite.getV0() * atlasHeight + notDrawingHeight,
-                                    drawingWidth,
-                                    drawingHeight,
-                                    atlasWidth,
-                                    atlasHeight);
-                        }
+                graphics.pose().pushPose();
+                graphics.pose().translate(0, height - 16, 0);
+                for (int i = 0; i < Math.ceil(renderableHeight / 16f); i++) {
+                    for (int j = 0; j < Math.ceil(width / 16f); j++) {
+                        int drawingWidth = Math.min(16, width - j * 16);
+                        int drawingHeight = Math.min(16, renderableHeight - i * 16);
+                        int notDrawingHeight = 16 - drawingHeight;
+                        int notDrawingWidth = 16 - drawingWidth;
+
+                        graphics.blit(InventoryMenu.BLOCK_ATLAS,
+                                offsetX + j * 16,
+                                offsetY + i * 16,
+                                0,
+                                sprite.getU0() * atlasWidth + notDrawingWidth,
+                                sprite.getV0() * atlasHeight + notDrawingHeight,
+                                drawingWidth,
+                                drawingHeight,
+                                atlasWidth,
+                                atlasHeight);
                     }
-                    RenderSystem.setShaderColor(1, 1, 1, 1);
-
-                    graphics.pose().popPose();
                 }
+                RenderSystem.setShaderColor(1, 1, 1, 1);
+
+                graphics.pose().popPose();
             }
         }
     }

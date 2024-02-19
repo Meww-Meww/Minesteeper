@@ -6,7 +6,7 @@
   },
   "outputFluid": {
     "Amount": 1000,
-    "FluidName": "minecraft:water"
+    "FluidName": "tealish:tea_fluid"
   },
   "input": {
     "item": "tealish:loose_leaf_tea"

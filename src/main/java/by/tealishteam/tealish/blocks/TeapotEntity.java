@@ -1,5 +1,6 @@
 package by.tealishteam.tealish.blocks;
 
+import by.tealishteam.tealish.fluids.TeaFluid;
 import by.tealishteam.tealish.menus.TeapotMenu;
 import by.tealishteam.tealish.network.NetworkHandler;
 import by.tealishteam.tealish.network.packets.SyncTeapotMenu;
@@ -331,6 +332,13 @@ public class TeapotEntity extends BaseContainerBlockEntity implements Container 
         if (this.canBurn(recipe, items, level)) {
             ItemStack ingredient = items.get(TeapotMenu.INGREDIENT_SLOT);
             ingredient.shrink(1);
+
+            if(((TeapotRecipe)recipe.value()).getResultFluid().getFluid() instanceof TeaFluid) {
+                this.waterTank.setFluid(TeaFluid.getFluidStackWithEffects(ingredient, ((TeapotRecipe) recipe.value()).getResultFluid().getAmount()));
+            } else {
+                this.waterTank.setFluid(((TeapotRecipe) recipe.value()).getResultFluid());
+            }
+            this.sendUpdatePacket();
             return true;
         } else {
             return false;

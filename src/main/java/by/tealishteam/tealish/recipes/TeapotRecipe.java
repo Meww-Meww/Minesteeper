@@ -65,6 +65,10 @@ public class TeapotRecipe implements Recipe<TeapotRecipe.Container> {
         return null;
     }
 
+    public FluidStack getResultFluid() {
+        return outputFluid;
+    }
+
     @Override
     public RecipeSerializer<?> getSerializer() {
         return TealishRecipes.TEAPOT_RECIPES.get();

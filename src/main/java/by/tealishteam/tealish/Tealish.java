@@ -2,6 +2,7 @@ package by.tealishteam.tealish;
 
 import by.tealishteam.tealish.blocks.TealishBlockEntityTypes;
 import by.tealishteam.tealish.blocks.TealishBlocks;
+import by.tealishteam.tealish.fluids.TealishFluids;
 import by.tealishteam.tealish.items.TealishCreativeModeTab;
 import by.tealishteam.tealish.items.TealishItems;
 import by.tealishteam.tealish.items.colors.LooseLeafTeaColor;
@@ -49,6 +50,7 @@ public class Tealish
         TealishBlocks.register(modEventBus);
         // Register the Deferred Register to the mod event bus so items get registered
         TealishItems.register(modEventBus);
+        TealishFluids.register(modEventBus);
         TealishBlockEntityTypes.register(modEventBus);
         TealishMenuTypes.register(modEventBus);
         TealishRecipes.register(modEventBus);
