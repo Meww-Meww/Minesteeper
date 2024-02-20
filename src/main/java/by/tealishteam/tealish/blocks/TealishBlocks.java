@@ -17,6 +17,7 @@ public class TealishBlocks {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
 
     public static final RegistryObject<Block> TEAPOT = BLOCKS.register("teapot", () -> new Teapot(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).requiresCorrectToolForDrops().strength(1.25F, 4.2F)));
+    public static final RegistryObject<Block> UNFIRED_TEAPOT = BLOCKS.register("unfired_teapot", () -> new TeapotShapedBlock(BlockBehaviour.Properties.of().mapColor(MapColor.CLAY).strength(0.6F).sound(SoundType.GRAVEL)));
     public static final RegistryObject<Block> TEA_LEAVES_CROP = BLOCKS.register("tea_crop", () -> new CropBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY)));
 
     public static void register(IEventBus modEventBus){

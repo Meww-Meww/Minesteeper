@@ -21,6 +21,10 @@ public class TealishItems {
             () -> new BlockItem(TealishBlocks.TEAPOT.get(), new Item.Properties())
     );
 
+    public static final RegistryObject<Item> UNFIRED_TEAPOT = ITEMS.register("unfired_teapot",
+            () -> new BlockItem(TealishBlocks.UNFIRED_TEAPOT.get(), new Item.Properties())
+    );
+
     // Items
     public static final RegistryObject<Item> TEA_LEAVES = ITEMS.register("tea_leaves",
             () -> new TeaLeaves(new Item.Properties().food(new FoodProperties.Builder()
@@ -32,7 +36,7 @@ public class TealishItems {
     );
 
     public static final RegistryObject<Item> TEA = ITEMS.register("tea",
-            () -> new Tea(new Item.Properties().food(new FoodProperties.Builder().build()))
+            () -> new Tea(new Item.Properties().stacksTo(1).food(new FoodProperties.Builder().build()))
     );
 
     public static final RegistryObject<Item> MUG = ITEMS.register("mug", () -> new Item(new Item.Properties()));

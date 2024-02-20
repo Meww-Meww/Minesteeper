@@ -17,6 +17,7 @@ public class TealishCreativeModeTab {
             .displayItems((parameters, output) -> {
                 output.accept(TealishItems.TEA_LEAVES.get());
                 output.accept(TealishItems.TEAPOT.get());
+                output.accept(TealishItems.UNFIRED_TEAPOT.get());
                 output.accept(TealishItems.TEA_SEEDS.get());
                 output.accept(TealishItems.LOOSE_LEAF_TEA.get());
                 output.accept(TealishItems.TEA.get());

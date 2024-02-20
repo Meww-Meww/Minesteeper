@@ -1,7 +1,7 @@
 {   "parent": "block/block",
   "textures": {
-    "particle": "tealish:block/teapot",
-    "body": "tealish:block/teapot"
+    "particle": "minecraft:block/clay",
+    "body": "minecraft:block/clay"
   },
   "display": {
     "fixed": {
