@@ -1,12 +1,11 @@
 package by.tealishteam.tealish.items;
 
 import by.tealishteam.tealish.blocks.TealishBlocks;
+import by.tealishteam.tealish.items.ingredients.TeaLeaves;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemNameBlockItem;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

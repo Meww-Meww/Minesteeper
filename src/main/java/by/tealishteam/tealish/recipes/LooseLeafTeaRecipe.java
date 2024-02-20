@@ -1,10 +1,12 @@
 package by.tealishteam.tealish.recipes;
 
-import by.tealishteam.tealish.items.Brewable;
+import by.tealishteam.tealish.items.ingredients.Brewable;
 import by.tealishteam.tealish.items.TealishItems;
+import by.tealishteam.tealish.utils.EffectSerialization;
 import com.google.common.collect.Lists;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -40,19 +42,30 @@ public class LooseLeafTeaRecipe extends CustomRecipe {
     @Override
     public ItemStack assemble(CraftingContainer craftingContainer, RegistryAccess registryAccess) {
         ItemStack looseLeafTeaItem = new ItemStack(TealishItems.LOOSE_LEAF_TEA.get());
-        CompoundTag compoundtag = looseLeafTeaItem.getOrCreateTagElement("Effects");
-        List<Integer> list = Lists.newArrayList();
+        CompoundTag compoundtag = looseLeafTeaItem.getOrCreateTag();
+        List<MobEffectInstance> effects = Lists.newArrayList();
 
-        for(int i = 0; i < craftingContainer.getContainerSize(); ++i) {
+        long averageColor = 0xA2C66A;
+        int numColors = 0;
+        for(int i = 0; i < craftingContainer.getContainerSize(); i++){
             ItemStack itemstack = craftingContainer.getItem(i);
             if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() instanceof Brewable) {
-                    list.add(((Brewable)itemstack.getItem()).getColor());
+                if(numColors == 0){
+                    averageColor = ((Brewable)itemstack.getItem()).getColor();
+                } else {
+                    averageColor += ((Brewable)itemstack.getItem()).getColor();
                 }
+                numColors++;
+                effects.add(((Brewable)itemstack.getItem()).getEffect());
             }
         }
 
-        compoundtag.putIntArray("Colors", list);
+        if(numColors > 0){
+            averageColor = averageColor / numColors;
+        }
+
+        compoundtag.putInt("Color", (int)averageColor);
+        EffectSerialization.toCompoundTag(effects, compoundtag);
 
         return looseLeafTeaItem;
     }
