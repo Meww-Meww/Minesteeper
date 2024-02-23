@@ -16,9 +16,11 @@ public class TealishCreativeModeTab {
             .icon(() -> TealishItems.TEA_LEAVES.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
                 output.accept(TealishItems.TEA_LEAVES.get());
+                output.accept(TealishItems.LAVENDER.get());
                 output.accept(TealishItems.TEAPOT.get());
                 output.accept(TealishItems.UNFIRED_TEAPOT.get());
                 output.accept(TealishItems.TEA_SEEDS.get());
+                output.accept(TealishItems.LAVENDER_SEEDS.get());
                 output.accept(TealishItems.LOOSE_LEAF_TEA.get());
                 output.accept(TealishItems.TEA.get());
                 output.accept(TealishItems.MUG.get());
