@@ -20,6 +20,9 @@ public abstract class Brewable extends Item {
     public int getColor(){
         return color;
     }
+    public int getColorWeight(){
+        return colorWeight;
+    }
     public MobEffectInstance getEffect(){
         return this.effect;
     }

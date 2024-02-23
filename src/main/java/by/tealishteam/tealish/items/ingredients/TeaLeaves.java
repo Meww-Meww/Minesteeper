@@ -5,7 +5,7 @@ import net.minecraft.world.effect.MobEffects;
 
 public class TeaLeaves extends Brewable {
     private static final int TEA_LEAVES_COLOR = 0xA2C66A;
-    private static final int TEA_LEAVES_COLOR_WEIGHT = 5;
+    private static final int TEA_LEAVES_COLOR_WEIGHT = 3;
     private static final MobEffectInstance TEA_LEAVES_EFFECT = new MobEffectInstance(MobEffects.REGENERATION, 200, 0);
 
     public TeaLeaves(Properties properties){

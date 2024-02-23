@@ -45,26 +45,38 @@ public class LooseLeafTeaRecipe extends CustomRecipe {
         CompoundTag compoundtag = looseLeafTeaItem.getOrCreateTag();
         List<MobEffectInstance> effects = Lists.newArrayList();
 
-        long averageColor = 0xA2C66A;
-        int numColors = 0;
+        int rAvg = 0xA2;
+        int gAvg = 0xC6;
+        int bAvg = 0x6A;
+        int totalWeight = 0;
         for(int i = 0; i < craftingContainer.getContainerSize(); i++){
             ItemStack itemstack = craftingContainer.getItem(i);
             if (!itemstack.isEmpty()) {
-                if(numColors == 0){
-                    averageColor = ((Brewable)itemstack.getItem()).getColor();
+                int color = ((Brewable)itemstack.getItem()).getColor();
+                int colorWeight = ((Brewable)itemstack.getItem()).getColorWeight();
+                if(totalWeight == 0){
+                    rAvg = ((color & 0xFF0000) >> 16) * colorWeight;
+                    gAvg = ((color & 0xFF00) >> 8) * colorWeight;
+                    bAvg = (color & 0xFF) * colorWeight;
                 } else {
-                    averageColor += ((Brewable)itemstack.getItem()).getColor();
+                    rAvg += ((color & 0xFF0000) >> 16) * colorWeight;
+                    gAvg += ((color & 0xFF00) >> 8) * colorWeight;
+                    bAvg += (color & 0xFF) * colorWeight;
                 }
-                numColors++;
+                totalWeight += colorWeight;
                 effects.add(((Brewable)itemstack.getItem()).getEffect());
             }
         }
 
-        if(numColors > 0){
-            averageColor = averageColor / numColors;
+        if(totalWeight > 0){
+            rAvg = rAvg / totalWeight;
+            gAvg = gAvg / totalWeight;
+            bAvg = bAvg / totalWeight;
         }
 
-        compoundtag.putInt("Color", (int)averageColor);
+        int avgColor = (rAvg << 16) | (gAvg << 8) | bAvg;
+
+        compoundtag.putInt("Color", avgColor);
         EffectSerialization.toCompoundTag(effects, compoundtag);
 
         return looseLeafTeaItem;
