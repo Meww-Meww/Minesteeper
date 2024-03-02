@@ -9,6 +9,7 @@ import by.tealishteam.tealish.items.TealishCreativeModeTab;
 import by.tealishteam.tealish.items.TealishItems;
 import by.tealishteam.tealish.menus.TealishMenuTypes;
 import by.tealishteam.tealish.network.NetworkHandler;
+import by.tealishteam.tealish.particles.TealishParticles;
 import by.tealishteam.tealish.recipes.TealishRecipeProvider;
 import by.tealishteam.tealish.recipes.TealishRecipes;
 import com.mojang.logging.LogUtils;
@@ -54,6 +55,7 @@ public class Tealish
         TealishBlockEntityTypes.register(modEventBus);
         TealishMenuTypes.register(modEventBus);
         TealishRecipes.register(modEventBus);
+        TealishParticles.register(modEventBus);
         // Register the Deferred Register to the mod event bus so tabs get registered
         TealishCreativeModeTab.register(modEventBus);
 

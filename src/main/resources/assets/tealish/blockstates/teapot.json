@@ -1,17 +1,32 @@
 {
   "variants": {
-    "facing=east": {
+    "facing=east,lit=false": {
       "model": "tealish:block/teapot",
       "y": 270
     },
-    "facing=north": {
+    "facing=north,lit=false": {
       "model": "tealish:block/teapot",
       "y": 180
     },
-    "facing=south": {
+    "facing=south,lit=false": {
       "model": "tealish:block/teapot"
     },
-    "facing=west": {
+    "facing=west,lit=false": {
+      "model": "tealish:block/teapot",
+      "y": 90
+    },
+    "facing=east,lit=true": {
+      "model": "tealish:block/teapot",
+      "y": 270
+    },
+    "facing=north,lit=true": {
+      "model": "tealish:block/teapot",
+      "y": 180
+    },
+    "facing=south,lit=true": {
+      "model": "tealish:block/teapot"
+    },
+    "facing=west,lit=true": {
       "model": "tealish:block/teapot",
       "y": 90
     }

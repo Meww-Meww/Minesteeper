@@ -26,6 +26,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
@@ -191,6 +192,8 @@ public class TeapotEntity extends BaseContainerBlockEntity implements Container 
 
     public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, TeapotEntity teapot) {
         boolean updated = false;
+        boolean previousLitState = teapot.isLit();
+
         if (teapot.isLit()) {
             teapot.litTime--;
             updated = true;
@@ -239,6 +242,11 @@ public class TeapotEntity extends BaseContainerBlockEntity implements Container 
         } else if (!teapot.isLit() && teapot.cookingProgress > 0) {
             teapot.cookingProgress = Mth.clamp(teapot.cookingProgress - 2, 0, teapot.cookingTotalTime);
             updated = true;
+        }
+
+        if (previousLitState != teapot.isLit()) {
+            blockState = blockState.setValue(Teapot.LIT, Boolean.valueOf(teapot.isLit()));
+            level.setBlock(blockPos, blockState, 3);
         }
 
         if(updated){
