@@ -28,6 +28,8 @@ public class ClientModEvents
                 () -> MenuScreens.register(TealishMenuTypes.TEAPOT_MENU.get(), TeapotScreen::new)
         );
         setRenderLayer(TealishBlocks.TEA_LEAVES_CROP.get(), RenderType.cutout());
+        setRenderLayer(TealishBlocks.LAVENDER_CROP.get(), RenderType.cutout());
+        setRenderLayer(TealishBlocks.BERGAMOT_SAPLING.get(), RenderType.cutout());
     }
 
     @SubscribeEvent( priority = EventPriority.LOWEST)

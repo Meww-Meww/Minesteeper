@@ -26,6 +26,14 @@ public class TealishItems {
             () -> new BlockItem(TealishBlocks.UNFIRED_TEAPOT.get(), new Item.Properties())
     );
 
+    public static final RegistryObject<Item> BERGAMOT_SAPLING = ITEMS.register("bergamot_sapling",
+            () -> new BlockItem(TealishBlocks.BERGAMOT_SAPLING.get(), new Item.Properties())
+    );
+
+    public static final RegistryObject<Item> BERGAMOT_LEAVES = ITEMS.register("bergamot_leaves",
+            () -> new BlockItem(TealishBlocks.BERGAMOT_LEAVES.get(), new Item.Properties())
+    );
+
     // Items
     public static final RegistryObject<Item> TEA_LEAVES = ITEMS.register("tea_leaves",
             () -> new TeaLeaves(new Item.Properties().food(new FoodProperties.Builder()
