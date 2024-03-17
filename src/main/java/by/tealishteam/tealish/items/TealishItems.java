@@ -3,6 +3,7 @@ package by.tealishteam.tealish.items;
 import by.tealishteam.tealish.blocks.TealishBlocks;
 import by.tealishteam.tealish.items.ingredients.Bergamot;
 import by.tealishteam.tealish.items.ingredients.Lavender;
+import by.tealishteam.tealish.items.ingredients.Mint;
 import by.tealishteam.tealish.items.ingredients.TeaLeaves;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
@@ -41,6 +42,11 @@ public class TealishItems {
                     .nutrition(1).saturationMod(1f).build()))
     );
 
+    public static final RegistryObject<Item> MINT = ITEMS.register("mint",
+            () -> new Mint(new Item.Properties().food(new FoodProperties.Builder()
+                    .nutrition(1).saturationMod(1f).build()))
+    );
+
     public static final RegistryObject<Item> LAVENDER = ITEMS.register("lavender",
             () -> new Lavender(new Item.Properties().food(new FoodProperties.Builder()
                     .nutrition(1).saturationMod(1f).build()))
@@ -64,6 +70,9 @@ public class TealishItems {
     public static final RegistryObject<Item> TEA_SEEDS = ITEMS.register("tea_seeds", () -> new ItemNameBlockItem(TealishBlocks.TEA_LEAVES_CROP.get(), new Item.Properties()));
 
     public static final RegistryObject<Item> LAVENDER_SEEDS = ITEMS.register("lavender_seeds", () -> new ItemNameBlockItem(TealishBlocks.LAVENDER_CROP.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> MINT_SEEDS = ITEMS.register("mint_seeds", () -> new ItemNameBlockItem(TealishBlocks.MINT_CROP.get(), new Item.Properties()));
+
     public static void register(IEventBus modEventBus){
         ITEMS.register(modEventBus);
     }

@@ -64,7 +64,10 @@ public class LooseLeafTeaRecipe extends CustomRecipe {
                     bAvg += (color & 0xFF) * colorWeight;
                 }
                 totalWeight += colorWeight;
-                effects.add(((Brewable)itemstack.getItem()).getEffect());
+
+                if(((Brewable)itemstack.getItem()).getEffect() != null) {
+                    effects.add(((Brewable) itemstack.getItem()).getEffect());
+                }
             }
         }
 
