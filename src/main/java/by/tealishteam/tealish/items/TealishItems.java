@@ -1,6 +1,7 @@
 package by.tealishteam.tealish.items;
 
 import by.tealishteam.tealish.blocks.TealishBlocks;
+import by.tealishteam.tealish.items.ingredients.Bergamot;
 import by.tealishteam.tealish.items.ingredients.Lavender;
 import by.tealishteam.tealish.items.ingredients.TeaLeaves;
 import net.minecraft.world.food.FoodProperties;
@@ -43,6 +44,11 @@ public class TealishItems {
     public static final RegistryObject<Item> LAVENDER = ITEMS.register("lavender",
             () -> new Lavender(new Item.Properties().food(new FoodProperties.Builder()
                     .nutrition(1).saturationMod(1f).build()))
+    );
+
+    public static final RegistryObject<Item> BERGAMOT = ITEMS.register("bergamot",
+            () -> new Bergamot(new Item.Properties().food(new FoodProperties.Builder()
+                    .nutrition(2).saturationMod(1f).build()))
     );
 
     public static final RegistryObject<Item> LOOSE_LEAF_TEA = ITEMS.register("loose_leaf_tea",

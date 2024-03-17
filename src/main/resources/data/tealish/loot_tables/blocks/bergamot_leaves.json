@@ -106,7 +106,7 @@
                 0.022222223,
                 0.025,
                 0.033333335,
-                0.1
+                0.15
               ],
               "condition": "minecraft:table_bonus",
               "enchantment": "minecraft:fortune"
@@ -173,17 +173,13 @@
             },
             {
               "chances": [
-                0.005,
-                0.0055555557,
-                0.00625,
-                0.008333334,
-                0.025
+                0.25
               ],
               "condition": "minecraft:table_bonus",
               "enchantment": "minecraft:fortune"
             }
           ],
-          "name": "minecraft:apple"
+          "name": "tealish:bergamot"
         }
       ],
       "rolls": 1.0
