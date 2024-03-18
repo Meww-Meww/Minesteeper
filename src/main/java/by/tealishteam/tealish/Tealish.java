@@ -2,6 +2,7 @@ package by.tealishteam.tealish;
 
 import by.tealishteam.tealish.blocks.TealishBlockEntityTypes;
 import by.tealishteam.tealish.blocks.TealishBlocks;
+import by.tealishteam.tealish.effects.TealishEffects;
 import by.tealishteam.tealish.fluids.TealishFluids;
 import by.tealishteam.tealish.items.LooseLeafTea;
 import by.tealishteam.tealish.items.Tea;
@@ -24,6 +25,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.Blocks;
@@ -32,6 +34,7 @@ import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -78,6 +81,7 @@ public class Tealish
         TealishRecipes.register(modEventBus);
         TealishParticles.register(modEventBus);
         TealishFeatures.register(modEventBus);
+        TealishEffects.register(modEventBus);
         // Register the Deferred Register to the mod event bus so tabs get registered
         TealishCreativeModeTab.register(modEventBus);
 
@@ -128,6 +132,13 @@ public class Tealish
         TealishRecipeProvider tealishRecipes = new TealishRecipeProvider(packOutput);
         generator.addProvider(true, tealishRecipes);
         generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(packOutput, lookupProvider, BUILDER, Set.of(Tealish.MODID)));
+    }
+
+    @SubscribeEvent
+    public void cancelSleep(PlayerSleepInBedEvent event){
+        if(event.getEntity().hasEffect(TealishEffects.CAFFEINATED.get())){
+            event.setResult(Player.BedSleepingProblem.OTHER_PROBLEM);
+        }
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
