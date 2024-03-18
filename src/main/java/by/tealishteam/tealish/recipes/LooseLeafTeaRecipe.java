@@ -62,7 +62,7 @@ public class LooseLeafTeaRecipe extends CustomRecipe {
     public ItemStack assemble(CraftingContainer craftingContainer, RegistryAccess registryAccess) {
         ItemStack looseLeafTeaItem = new ItemStack(TealishItems.LOOSE_LEAF_TEA.get());
         CompoundTag compoundtag = looseLeafTeaItem.getOrCreateTag();
-        List<MobEffectInstance> effects = Lists.newArrayList();
+        List<CompoundTag> effects = Lists.newArrayList();
         List<Brewable> ingredients = Lists.newArrayList();
 
         int rAvg = 0xA2;
@@ -70,6 +70,7 @@ public class LooseLeafTeaRecipe extends CustomRecipe {
         int bAvg = 0x6A;
         int totalWeight = 0;
         int durationModifier = 0;
+        CompoundTag negativeEffectsTag = null;
         for(int i = 0; i < craftingContainer.getContainerSize(); i++){
             ItemStack itemstack = craftingContainer.getItem(i);
 
@@ -89,6 +90,7 @@ public class LooseLeafTeaRecipe extends CustomRecipe {
 
                 if(itemstack.getItem() instanceof TeaBase base){
                     durationModifier = base.getEffectDurationMultiplier();
+                    negativeEffectsTag = base.getEffectTag(1);
                 } else {
                     ingredients.add((Brewable)itemstack.getItem());
                 }
@@ -96,7 +98,7 @@ public class LooseLeafTeaRecipe extends CustomRecipe {
         }
 
         for(Brewable ingredient : ingredients){
-            effects.add(ingredient.getEffect(durationModifier));
+            effects.add(ingredient.getEffectTag(durationModifier));
         }
 
         if(totalWeight > 0){
@@ -108,6 +110,9 @@ public class LooseLeafTeaRecipe extends CustomRecipe {
         int avgColor = (rAvg << 16) | (gAvg << 8) | bAvg;
 
         compoundtag.putInt("Color", avgColor);
+        if(negativeEffectsTag != null) {
+            compoundtag.put("NegativeEffects", negativeEffectsTag);
+        }
         EffectSerialization.toCompoundTag(effects, compoundtag);
 
         return looseLeafTeaItem;

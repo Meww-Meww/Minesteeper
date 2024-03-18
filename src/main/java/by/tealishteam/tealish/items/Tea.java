@@ -1,22 +1,15 @@
 package by.tealishteam.tealish.items;
 
-import by.tealishteam.tealish.fluids.TeaFluid;
-import by.tealishteam.tealish.fluids.TealishFluids;
 import by.tealishteam.tealish.utils.EffectSerialization;
 import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
@@ -40,6 +33,11 @@ public class Tea extends Item {
             for(MobEffectInstance effect : appliedEffects){
                 entity.addEffect(effect);
             }
+
+            MobEffectInstance negativeEffect = MobEffectInstance.load(itemStack.getTag().getCompound("NegativeEffects"));
+            if(negativeEffect != null) {
+                entity.addEffect(negativeEffect);
+            }
         }
 
         return new ItemStack(TealishItems.MUG.get());
@@ -59,6 +57,9 @@ public class Tea extends Item {
         if(fluid.hasTag()){
             stack.getOrCreateTag().putInt("Color", fluid.getTag().getInt("Color"));
             stack.getTag().put("Effects", fluid.getTag().get("Effects").copy());
+            if(fluid.getTag().get("NegativeEffects") != null) {
+                stack.getTag().put("NegativeEffects", fluid.getTag().get("NegativeEffects").copy());
+            }
         }
 
         return stack;
