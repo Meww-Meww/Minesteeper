@@ -5,6 +5,7 @@ import by.tealishteam.tealish.items.TealishItems;
 import by.tealishteam.tealish.menus.TeapotMenu;
 import by.tealishteam.tealish.network.NetworkHandler;
 import by.tealishteam.tealish.network.packets.SyncTeapotMenu;
+import by.tealishteam.tealish.recipes.MilkyTeaRecipe;
 import by.tealishteam.tealish.recipes.TealishRecipes;
 import by.tealishteam.tealish.recipes.TeapotRecipe;
 import net.minecraft.core.BlockPos;
@@ -354,13 +355,14 @@ public class TeapotEntity extends BaseContainerBlockEntity implements Container 
     private boolean burn(@Nullable RecipeHolder<?> recipe, NonNullList<ItemStack> items, Level level) {
         if (this.canBurn(recipe, items, level)) {
             ItemStack ingredient = items.get(TeapotMenu.INGREDIENT_SLOT);
-            ingredient.shrink(1);
 
             if(((TeapotRecipe)recipe.value()).getResultFluid().getFluid() instanceof TeaFluid) {
-                this.waterTank.setFluid(TeaFluid.getFluidStackWithEffects(ingredient, ((TeapotRecipe) recipe.value()).getResultFluid().getAmount()));
+                this.waterTank.setFluid(TeaFluid.getFluidStackWithEffects(ingredient, this.waterTank.getFluid(), ((TeapotRecipe) recipe.value()).getResultFluid().getAmount()));
             } else {
                 this.waterTank.setFluid(((TeapotRecipe) recipe.value()).getResultFluid());
             }
+
+            ingredient.shrink(1);
             this.sendUpdatePacket();
             return true;
         } else {

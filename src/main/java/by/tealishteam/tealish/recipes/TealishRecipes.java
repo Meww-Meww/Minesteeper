@@ -1,5 +1,6 @@
 package by.tealishteam.tealish.recipes;
 
+import by.tealishteam.tealish.recipes.serializers.TeapotSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.*;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -17,8 +18,10 @@ public class TealishRecipes {
             () -> new SimpleCraftingRecipeSerializer<>(LooseLeafTeaRecipe::new)
     );
 
-    public static final RegistryObject<TeapotRecipe.Serializer> TEAPOT_RECIPES = RECIPES.register("teapot", TeapotRecipe.Serializer::new);
+    public static final RegistryObject<TeapotSerializer<TeapotRecipe>> TEAPOT_RECIPES = RECIPES.register("teapot", () -> new TeapotSerializer<>(TeapotRecipe::new));
     public static final RegistryObject<RecipeType<TeapotRecipe>> TEAPOT_RECIPE_TYPE = RECIPE_TYPES.register("teapot", () -> RecipeType.simple(new ResourceLocation(MODID, "teapot")));
+
+    public static final RegistryObject<TeapotSerializer<MilkyTeaRecipe>> MILKY_TEA_RECIPE = RECIPES.register("milky_tea_recipe", () -> new TeapotSerializer<>(MilkyTeaRecipe::new));
 
     public static void register(IEventBus modEventBus){
         RECIPES.register(modEventBus);

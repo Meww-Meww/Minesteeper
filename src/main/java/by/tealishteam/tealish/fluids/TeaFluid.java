@@ -5,9 +5,11 @@ import by.tealishteam.tealish.items.Tea;
 import by.tealishteam.tealish.utils.EffectSerialization;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,14 +27,33 @@ import static by.tealishteam.tealish.Tealish.MODID;
 
 public class TeaFluid extends Fluid {
 
-    public static FluidStack getFluidStackWithEffects(ItemStack tea, int fluidAmount)
+    public static FluidStack getFluidStackWithEffects(ItemStack inputItem, FluidStack inputFluid, int fluidAmount)
     {
         FluidStack stack = new FluidStack(TealishFluids.TEA_FLUID.get(), fluidAmount);
-        stack.getOrCreateTag().putInt("Color", new LooseLeafTea.LooseLeafTeaColor().getColor(tea, 0));
-        stack.getTag().put("Effects", tea.getTag().get("Effects").copy());
-        if(tea.getTag().get("NegativeEffects") != null) {
-            stack.getTag().put("NegativeEffects", tea.getTag().get("NegativeEffects").copy());
+        CompoundTag tag = new CompoundTag();
+
+        if(inputItem.getTag() != null){
+            tag.merge(inputItem.getTag());
         }
+
+        if(inputFluid.getTag() != null){
+            tag.merge(inputFluid.getTag());
+        }
+
+        if(inputItem.getItem() == Items.MILK_BUCKET){
+            tag.putBoolean("Milk", true);
+            if(stack.getTag().getBoolean("Milk")){
+                int color = tag.getInt("Color");
+                int rAvg = (((color & 0xFF0000) >> 16) * 3 + 0xFF) / 4;
+                int gAvg = (((color & 0xFF00) >> 8) * 3 + 0xFF) / 4;
+                int bAvg = ((color & 0xFF) * 3 + 0xFF) / 4;
+                color = (rAvg << 16) | (gAvg << 8) | bAvg;
+
+                tag.putInt("Color", color);
+            }
+        }
+
+        stack.setTag(tag);
         return stack;
     }
 

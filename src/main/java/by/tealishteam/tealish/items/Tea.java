@@ -10,6 +10,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
@@ -32,6 +33,10 @@ public class Tea extends Item {
             List<MobEffectInstance> appliedEffects = EffectSerialization.fromCompoundTag(itemStack.getTag());
             for(MobEffectInstance effect : appliedEffects){
                 entity.addEffect(effect);
+            }
+
+            if(itemStack.getTag().getBoolean("Milk")){
+                entity.curePotionEffects(new ItemStack(Items.MILK_BUCKET));
             }
 
             MobEffectInstance negativeEffect = MobEffectInstance.load(itemStack.getTag().getCompound("NegativeEffects"));
@@ -57,8 +62,13 @@ public class Tea extends Item {
         if(fluid.hasTag()){
             stack.getOrCreateTag().putInt("Color", fluid.getTag().getInt("Color"));
             stack.getTag().put("Effects", fluid.getTag().get("Effects").copy());
+
             if(fluid.getTag().get("NegativeEffects") != null) {
                 stack.getTag().put("NegativeEffects", fluid.getTag().get("NegativeEffects").copy());
+            }
+
+            if(fluid.getTag().get("Milk") != null){
+                stack.getTag().putBoolean("Milk", fluid.getTag().getBoolean("Milk"));
             }
         }
 
