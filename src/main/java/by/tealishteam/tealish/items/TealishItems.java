@@ -57,6 +57,8 @@ public class TealishItems {
                     .nutrition(2).saturationMod(1f).build()))
     );
 
+    public static final RegistryObject<Item> SUGAR_CUBE = ITEMS.register("sugar_cube", () -> new Item(new Item.Properties()) );
+
     public static final RegistryObject<Item> LOOSE_LEAF_TEA = ITEMS.register("loose_leaf_tea",
             () -> new LooseLeafTea(new Item.Properties())
     );

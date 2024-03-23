@@ -22,6 +22,7 @@ public class TealishRecipes {
     public static final RegistryObject<RecipeType<TeapotRecipe>> TEAPOT_RECIPE_TYPE = RECIPE_TYPES.register("teapot", () -> RecipeType.simple(new ResourceLocation(MODID, "teapot")));
 
     public static final RegistryObject<TeapotSerializer<MilkyTeaRecipe>> MILKY_TEA_RECIPE = RECIPES.register("milky_tea_recipe", () -> new TeapotSerializer<>(MilkyTeaRecipe::new));
+    public static final RegistryObject<TeapotSerializer<SweetenedTeaRecipe>> SWEETENED_TEA_RECIPE = RECIPES.register("sweetened_tea_recipe", () -> new TeapotSerializer<>(SweetenedTeaRecipe::new));
 
     public static void register(IEventBus modEventBus){
         RECIPES.register(modEventBus);

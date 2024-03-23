@@ -19,13 +19,14 @@ public class TealishCreativeModeTab {
                 output.accept(TealishItems.MINT.get());
                 output.accept(TealishItems.LAVENDER.get());
                 output.accept(TealishItems.BERGAMOT.get());
-                output.accept(TealishItems.BERGAMOT_SAPLING.get());
-                output.accept(TealishItems.BERGAMOT_LEAVES.get());
+                output.accept(TealishItems.SUGAR_CUBE.get());
                 output.accept(TealishItems.TEAPOT.get());
                 output.accept(TealishItems.UNFIRED_TEAPOT.get());
                 output.accept(TealishItems.TEA_SEEDS.get());
                 output.accept(TealishItems.LAVENDER_SEEDS.get());
                 output.accept(TealishItems.MINT_SEEDS.get());
+                output.accept(TealishItems.BERGAMOT_SAPLING.get());
+                output.accept(TealishItems.BERGAMOT_LEAVES.get());
                 output.accept(TealishItems.LOOSE_LEAF_TEA.get());
                 output.accept(TealishItems.TEA.get());
                 output.accept(TealishItems.MUG.get());

@@ -5,13 +5,13 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
-public class MilkyTeaRecipe extends TaggedTeaRecipe {
-    public MilkyTeaRecipe(FluidStack inputFluid, FluidStack outputFluid, Ingredient input) {
-        super("Milk", inputFluid, outputFluid, input);
+public class SweetenedTeaRecipe extends TaggedTeaRecipe {
+    public SweetenedTeaRecipe(FluidStack inputFluid, FluidStack outputFluid, Ingredient input) {
+        super("Sugar", inputFluid, outputFluid, input);
     }
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return TealishRecipes.MILKY_TEA_RECIPE.get();
+        return TealishRecipes.SWEETENED_TEA_RECIPE.get();
     }
 }

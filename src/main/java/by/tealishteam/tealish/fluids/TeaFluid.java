@@ -2,6 +2,7 @@ package by.tealishteam.tealish.fluids;
 
 import by.tealishteam.tealish.items.LooseLeafTea;
 import by.tealishteam.tealish.items.Tea;
+import by.tealishteam.tealish.items.TealishItems;
 import by.tealishteam.tealish.utils.EffectSerialization;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -51,6 +52,13 @@ public class TeaFluid extends Fluid {
 
                 tag.putInt("Color", color);
             }
+        }
+
+        if(inputItem.getItem() == TealishItems.SUGAR_CUBE.get()){
+            tag.putBoolean("Sugar", true);
+            int effectIndex = (int) (Math.random() * tag.getCompound("Effects").getAllKeys().size());
+
+            tag.getCompound("Effects").getCompound(String.valueOf(effectIndex)).putByte("amplifier", (byte) 1);
         }
 
         stack.setTag(tag);
