@@ -11,9 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.placement.PlacementModifier;
+import net.minecraft.world.level.levelgen.placement.*;
 
 import java.util.List;
 
@@ -24,10 +22,13 @@ public class TealishPlacedFeatures {
     public static void bootstrap(BootstapContext<PlacedFeature> context)
     {
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
-
         register(context, configuredFeatures, BERGAMOT_TREE_FEATURE, TealishConfiguredFeatures.BERGAMOT_TREE, List.of(
+                CountPlacement.of(1000),
+                InSquarePlacement.spread(),
+                PlacementUtils.HEIGHTMAP_TOP_SOLID,
                 PlacementUtils.filteredByBlockSurvival(TealishBlocks.BERGAMOT_SAPLING.get()),
-                BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(BlockPos.ZERO.above(2), Blocks.AIR))
+                BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(BlockPos.ZERO.above(2), Blocks.AIR)),
+                BiomeFilter.biome()
         ));
     }
 

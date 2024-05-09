@@ -55,10 +55,6 @@ public class Tealish
     public static final String MODID = "tealish";
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
-            .add(Registries.PLACED_FEATURE, TealishPlacedFeatures::bootstrap)
-            .add(Registries.CONFIGURED_FEATURE, TealishConfiguredFeatures::bootstrap);
-
     public Tealish()
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -67,7 +63,6 @@ public class Tealish
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::colorSetup);
         modEventBus.addListener(this::registerBlockColors);
-        modEventBus.addListener(this::gatherData);
 
         NetworkHandler.register();
 
@@ -122,16 +117,6 @@ public class Tealish
                         world != null && pos != null ? BiomeColors.getAverageFoliageColor(world, pos)
                                 : FoliageColor.getDefaultColor(),
                 TealishBlocks.BERGAMOT_LEAVES.get());
-    }
-
-    public void gatherData(GatherDataEvent event) {
-        DataGenerator generator = event.getGenerator();
-        PackOutput packOutput = generator.getPackOutput();
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-
-        TealishRecipeProvider tealishRecipes = new TealishRecipeProvider(packOutput);
-        generator.addProvider(true, tealishRecipes);
-        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(packOutput, lookupProvider, BUILDER, Set.of(Tealish.MODID)));
     }
 
     @SubscribeEvent
