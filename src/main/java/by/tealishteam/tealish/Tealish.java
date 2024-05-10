@@ -8,6 +8,7 @@ import by.tealishteam.tealish.items.LooseLeafTea;
 import by.tealishteam.tealish.items.Tea;
 import by.tealishteam.tealish.items.TealishCreativeModeTab;
 import by.tealishteam.tealish.items.TealishItems;
+import by.tealishteam.tealish.loot.TealishLootModifiers;
 import by.tealishteam.tealish.menus.TealishMenuTypes;
 import by.tealishteam.tealish.network.NetworkHandler;
 import by.tealishteam.tealish.particles.TealishParticles;
@@ -77,6 +78,7 @@ public class Tealish
         TealishParticles.register(modEventBus);
         TealishFeatures.register(modEventBus);
         TealishEffects.register(modEventBus);
+        TealishLootModifiers.register(modEventBus);
         // Register the Deferred Register to the mod event bus so tabs get registered
         TealishCreativeModeTab.register(modEventBus);
 
