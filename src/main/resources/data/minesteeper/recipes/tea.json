@@ -1,0 +1,14 @@
+{
+  "type": "minesteeper:teapot",
+  "inputFluid": {
+    "Amount": 1000,
+    "FluidName": "minecraft:water"
+  },
+  "outputFluid": {
+    "Amount": 1000,
+    "FluidName": "minesteeper:tea_fluid"
+  },
+  "input": {
+    "item": "minesteeper:loose_leaf_tea"
+  }
+}

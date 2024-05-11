@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "minesteeper:block/unfired_teapot",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "minesteeper:block/unfired_teapot",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "minesteeper:block/unfired_teapot"
+    },
+    "facing=west": {
+      "model": "minesteeper:block/unfired_teapot",
+      "y": 90
+    }
+  }
+}

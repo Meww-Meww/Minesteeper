@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "tealish:item/tea",
-    "layer1": "tealish:item/tea_overlay"
-  }
-}

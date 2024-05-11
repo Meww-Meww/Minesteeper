@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,lit=false": {
+      "model": "minesteeper:block/teapot",
+      "y": 270
+    },
+    "facing=north,lit=false": {
+      "model": "minesteeper:block/teapot",
+      "y": 180
+    },
+    "facing=south,lit=false": {
+      "model": "minesteeper:block/teapot"
+    },
+    "facing=west,lit=false": {
+      "model": "minesteeper:block/teapot",
+      "y": 90
+    },
+    "facing=east,lit=true": {
+      "model": "minesteeper:block/teapot",
+      "y": 270
+    },
+    "facing=north,lit=true": {
+      "model": "minesteeper:block/teapot",
+      "y": 180
+    },
+    "facing=south,lit=true": {
+      "model": "minesteeper:block/teapot"
+    },
+    "facing=west,lit=true": {
+      "model": "minesteeper:block/teapot",
+      "y": 90
+    }
+  }
+}

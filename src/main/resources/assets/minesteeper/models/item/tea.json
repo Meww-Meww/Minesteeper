@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "minesteeper:item/tea",
+    "layer1": "minesteeper:item/tea_overlay"
+  }
+}

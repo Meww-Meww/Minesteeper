@@ -1,8 +1,8 @@
 {
   "entries": [
-    "tealish:tea_from_grass",
-    "tealish:mint_from_grass",
-    "tealish:lavender_from_grass"
+    "minesteeper:tea_from_grass",
+    "minesteeper:mint_from_grass",
+    "minesteeper:lavender_from_grass"
   ],
   "replace": false
 }

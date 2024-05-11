@@ -1,0 +1,14 @@
+{
+  "type": "minesteeper:sweetened_tea_recipe",
+  "inputFluid": {
+    "Amount": 1000,
+    "FluidName": "minesteeper:tea_fluid"
+  },
+  "outputFluid": {
+    "Amount": 1000,
+    "FluidName": "minesteeper:tea_fluid"
+  },
+  "input": {
+    "item": "minesteeper:sugar_cube"
+  }
+}
