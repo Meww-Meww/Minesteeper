@@ -22,5 +22,6 @@
   "item.minesteeper.tea_seeds": "Tea Seeds",
   "item.minesteeper.teapot": "Teapot",
   "item.minesteeper.unfired_teapot": "Unfired Teapot",
-  "container.teapot": "Teapot"
+  "container.teapot": "Teapot",
+  "itemGroup.minesteeper.tab": "Minesteeper"
 }

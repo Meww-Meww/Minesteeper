@@ -2,6 +2,7 @@ package by.meww_meww.minesteeper.items;
 
 import by.meww_meww.minesteeper.Minesteeper;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -10,8 +11,9 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class MinesteeperCreativeModeTab {
     private static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Minesteeper.MODID);
-    public static final RegistryObject<CreativeModeTab> MINESTEEPER_TAB = CREATIVE_MODE_TABS.register("minesteeper_tab", () -> CreativeModeTab.builder()
+    public static final RegistryObject<CreativeModeTab> MINESTEEPER_TAB = CREATIVE_MODE_TABS.register("tab", () -> CreativeModeTab.builder()
             .withTabsBefore(CreativeModeTabs.COMBAT)
+            .title(Component.translatable("itemGroup.minesteeper.tab"))
             .icon(() -> MinesteeperItems.TEA_LEAVES.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
                 output.accept(MinesteeperItems.TEA_LEAVES.get());
