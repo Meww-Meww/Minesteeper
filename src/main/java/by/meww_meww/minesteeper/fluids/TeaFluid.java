@@ -154,6 +154,7 @@ public class TeaFluid extends Fluid {
                 public int getTintColor(FluidStack stack)
                 {
                     if(!stack.hasTag()) return 0xFFA2C66A;
+                    if(!stack.getTag().contains("Color")) return 0xFFA2C66A;
                     return 0xFF000000 | stack.getTag().getInt("Color");
                 }
             });

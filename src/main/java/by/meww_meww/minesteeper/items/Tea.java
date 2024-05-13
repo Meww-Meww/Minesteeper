@@ -60,15 +60,25 @@ public class Tea extends Item {
         ItemStack stack = new ItemStack(MinesteeperItems.TEA.get(), amount);
 
         if(fluid.hasTag()){
-            stack.getOrCreateTag().putInt("Color", fluid.getTag().getInt("Color"));
-            stack.getTag().put("Effects", fluid.getTag().get("Effects").copy());
-
-            if(fluid.getTag().get("NegativeEffects") != null) {
-                stack.getTag().put("NegativeEffects", fluid.getTag().get("NegativeEffects").copy());
+            if(fluid.getTag().contains("Color")) {
+                stack.getOrCreateTag().putInt("Color", fluid.getTag().getInt("Color"));
             }
 
-            if(fluid.getTag().get("Milk") != null){
-                stack.getTag().putBoolean("Milk", fluid.getTag().getBoolean("Milk"));
+            if(fluid.getTag().contains("Effects")) {
+                stack.getOrCreateTag().put("Effects", fluid.getTag().get("Effects").copy());
+            }
+
+
+            if(fluid.getTag().contains("NegativeEffects")) {
+                stack.getOrCreateTag().put("NegativeEffects", fluid.getTag().get("NegativeEffects").copy());
+            }
+
+            if(fluid.getTag().contains("Milk")){
+                stack.getOrCreateTag().putBoolean("Milk", fluid.getTag().getBoolean("Milk"));
+            }
+
+            if(fluid.getTag().contains("Sugar")){
+                stack.getOrCreateTag().putBoolean("Sugar", fluid.getTag().getBoolean("Sugar"));
             }
         }
 
@@ -91,6 +101,9 @@ public class Tea extends Item {
             if(layer == 0){
                 CompoundTag compoundtag = itemStack.getTag();
                 if(compoundtag == null){
+                    return 0xFFA2C66A;
+                }
+                if(!compoundtag.contains("Color")){
                     return 0xFFA2C66A;
                 }
 
